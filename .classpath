@@ -32,5 +32,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.transaction-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.web.portlet-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.web.struts-3.0.5.RELEASE.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Dictionary"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

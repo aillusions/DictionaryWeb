@@ -1,5 +1,5 @@
-<%@ include file="/jsp/include.jsp" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ include file="/jsp/fragments/jsp_common_directives.jsp" %>
+
 
 <html>
 <head>

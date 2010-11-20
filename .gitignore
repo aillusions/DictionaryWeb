@@ -4,3 +4,4 @@ dist/*
 install/*
 update/*
 print.doc
+war/WEB-INF/classes/*

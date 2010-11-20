@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 
-<project name="springapp" basedir="." default="usage">
+<project name="DictionaryWeb" basedir="." default="usage">
     <property file="build.properties"/>
 
     <property name="src.dir" value="src"/>
     <property name="web.dir" value="war"/>
     <property name="build.dir" value="${web.dir}/WEB-INF/classes"/>
-    <property name="name" value="springapp"/>
+    <property name="name" value="DictionaryWeb"/>
 
     <path id="master-classpath">
         <fileset dir="${web.dir}/WEB-INF/lib">
@@ -20,6 +20,13 @@
         </fileset>
         <pathelement path="${build.dir}"/>
     </path>
+	
+	<path id="top_bpath">
+		<pathelement path="bin" />
+		<fileset dir="../Dictionary/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
 
     <target name="usage">
         <echo message=""/>
@@ -39,12 +46,33 @@
         <echo message=""/>
     </target>
 
-    <target name="build" description="Compile main source tree java files">
+	
+	<target name="build_base_dictionary" description="Compile base Dictionary prj source java files">
+        <javac destdir="${build.dir}" source="1.5" target="1.5" debug="true"
+               deprecation="false" optimize="false" failonerror="true">
+            <src path="../Dictionary/${src.dir}"/>
+            <classpath refid="master-classpath"/>
+            <classpath refid="top_bpath"/>
+        </javac>
+    	
+        <copy todir="${build.dir}" preservelastmodified="true">
+            <fileset dir="${src.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.xml"/>
+                <include name="**/*.xsl"/>
+            </fileset>
+        </copy>
+
+    </target>
+	
+	
+    <target name="build" depends="build_base_dictionary" description="Compile main source tree java files">
         <mkdir dir="${build.dir}"/>
         <javac destdir="${build.dir}" source="1.5" target="1.5" debug="true"
                deprecation="false" optimize="false" failonerror="true">
             <src path="${src.dir}"/>
             <classpath refid="master-classpath"/>
+			<classpath refid="top_bpath"/>
         </javac>
     	
         <copy todir="${build.dir}" preservelastmodified="true">
