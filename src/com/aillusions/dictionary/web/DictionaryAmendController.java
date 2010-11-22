@@ -23,9 +23,9 @@ public class DictionaryAmendController extends SimpleFormController {
 
 		AddNewWord addNewWord = (AddNewWord) command;
 		Pair pair = new Pair();
-		pair.setEnglish(addNewWord.getWord());
+		pair.setWord(addNewWord.getWord());
 		pair.setTranscription(addNewWord.getTranscrition());
-		pair.setRussian(addNewWord.getTranslate());
+		pair.setTranslation(addNewWord.getTranslate());
 		manager.getPairsManager().addNew(pair);
 
 		this.logger.info("returning from PriceIncreaseForm view to " + getSuccessView());

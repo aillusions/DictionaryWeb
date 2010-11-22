@@ -46,11 +46,11 @@
 <table>
 	<c:forEach items="${manager.pairsManager.allPairs}" var="pair">
 		<tr class="words">
-			<td><a href="home.do?editWord=${pair.english}">edit</a></td>
-			<td><a href="home.do?removeWord=${pair.english}">rem</a></td>
-			<td><c:out value="${pair.english}" escapeXml="false" /></td>
+			<td><a href="home.do?editWord=${pair.word}">edit</a></td>
+			<td><a href="home.do?removeWord=${pair.word}">rem</a></td>
+			<td><c:out value="${pair.word}" escapeXml="false" /></td>
 			<td><c:out value="${pair.transcription}" escapeXml="false" /></td>
-			<td><c:out value="${pair.russian}" escapeXml="false" /></td>
+			<td><c:out value="${pair.translation}" escapeXml="false" /></td>
 		</tr>
 	</c:forEach>
 </table>
@@ -62,13 +62,13 @@
 		    <c:forEach items="${manager.trashManager.allTrashPairs}" var="pair">
 			    <tr class="words">
 				      <td>
-					      <c:out value="${pair.english}" escapeXml="false" />
+					      <c:out value="${pair.word}" escapeXml="false" />
 					  </td>
 					  <td>
 					      <c:out value="${pair.transcription}" escapeXml="false"/>
 					  </td>
 					  <td>
-					      <c:out value="${pair.russian}" escapeXml="false"/>
+					      <c:out value="${pair.translation}" escapeXml="false"/>
 				      </td>
 				</tr>
 		    </c:forEach>		    	
