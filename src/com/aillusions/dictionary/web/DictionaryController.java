@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import com.aillusions.dictionary.core.Manager;
+import com.aillusions.dictionary.core.WorkspaceManager.DictionaryHasToBeCreated;
 
 public class DictionaryController implements Controller {
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -31,10 +32,24 @@ public class DictionaryController implements Controller {
 
 		this.logger.info("handle Request");
 
+		if (!manager.getWorkspaceManager().isLoaded()) {
+			try {
+				manager.getWorkspaceManager().load();
+			} catch (DictionaryHasToBeCreated e) {
+				return new ModelAndView("create_dict");
+			}
+		}
+
 		String dictName = request.getParameter("dictName");
 		if (dictName != null) {
 			this.logger.info("change Dictionary");
-			manager.getWorkspaceManager().selectDictionary(dictName);
+			manager.getCurrentStateManager().setCurrentDict(manager.getWorkspaceManager().getDictionaryByName(dictName));
+		}
+
+		String selectWord = request.getParameter("selectWord");
+		if (selectWord != null) {
+			this.logger.info("select Word");
+			manager.getCurrentStateManager().setCurrentPairByKey(selectWord);
 		}
 
 		String reloadDict = request.getParameter("reloadDict");
@@ -42,13 +57,16 @@ public class DictionaryController implements Controller {
 			if (Boolean.parseBoolean(reloadDict)) {
 				this.logger.info("reload Dictionary");
 				String currDictName = manager.getCurrentStateManager().getCurrentDictionary().getDisplayName();
-				manager.Load();
+				try {
+					manager.getWorkspaceManager().load();
+				} catch (DictionaryHasToBeCreated e) {
+					return new ModelAndView("create_dict");
+				}
 				manager.getWorkspaceManager().selectDictionary(currDictName);
 			}
 		}
 
 		String removeWord = request.getParameter("removeWord");
-
 		if (removeWord != null && removeWord.length() > 0) {
 			String actionConfirmation = request.getParameter("actionConfirmation");
 			if (actionConfirmation != null) {
@@ -70,7 +88,6 @@ public class DictionaryController implements Controller {
 		}
 
 		response.setContentType("text/html; charset=utf-8");
-
 		return new ModelAndView("home", "manager", this.manager);
 
 	}

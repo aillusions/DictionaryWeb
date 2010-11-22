@@ -23,6 +23,10 @@
 	margin: 0 .2em -1px 0;
 	padding: 0;
 }
+
+.selected {
+	background-color: #fff5bf;
+}
 </style>
 
 </head>
@@ -30,9 +34,19 @@
 
 <c:forEach items="${manager.workspaceManager.workspace.dictioanries}"
 	var="dict">
-	<a href="home.do?dictName=${dict.displayName}"><c:out
-		value="${dict.displayName}" /></a>
+
+	<c:choose>
+		<c:when
+			test="${manager.currentStateManager.currentDictionary.displayName == dict.displayName}"> 
+	     &gt;<c:out value="${dict.displayName}" />&lt;
+	  </c:when>
+		<c:otherwise>
+			<a href="home.do?dictName=${dict.displayName}"><c:out
+				value="${dict.displayName}" /></a>
+		</c:otherwise>
+	</c:choose>
 	<br />
+
 </c:forEach>
 
 <a href="home.do?reloadDict=true">Reload</a>
@@ -44,13 +58,33 @@
 <hr />
 <div style="position: relative; float: left;">Words:
 <table>
-	<c:forEach items="${manager.pairsManager.allPairs}" var="pair">
-		<tr class="words">
-			<td><a href="home.do?editWord=${pair.word}">edit</a></td>
-			<td><a href="home.do?removeWord=${pair.word}">rem</a></td>
-			<td><c:out value="${pair.word}" escapeXml="false" /></td>
+	<c:forEach items="${manager.pairsManager.allPairs}" var="pair">	
+			<c:choose>
+				<c:when test="${manager.currentStateManager.currentPair.word == pair.word}">
+					<tr class="words  selected">
+					 <td>
+						<c:out value="${pair.word}" escapeXml="false" />
+					</td>			
+				</c:when>
+				<c:otherwise>
+					<tr class="words">
+						<td>
+							<a href="home.do?selectWord=${pair.word}"><c:out value="${pair.word}" escapeXml="false" /></a>
+						</td>
+				</c:otherwise>
+			</c:choose>
+		
 			<td><c:out value="${pair.transcription}" escapeXml="false" /></td>
-			<td><c:out value="${pair.translation}" escapeXml="false" /></td>
+			<td><c:out value="${pair.translation}" escapeXml="false" /></td>	
+					
+			<c:choose>
+				<c:when test="${manager.currentStateManager.currentPair.word == pair.word}">
+					 <td>
+							[<a href="home.do?editWord=${pair.word}">edit</a>]
+							[<a href="home.do?removeWord=${pair.word}">rem</a>]	
+					</td>			
+				</c:when>
+			</c:choose>	
 		</tr>
 	</c:forEach>
 </table>
