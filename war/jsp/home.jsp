@@ -6,12 +6,19 @@
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 
 <style>
-.clearall {
-	clear: both;
-	height: 1px;
-	visibility: hidden;
-	display: block;
-	line-height: 0;
+a,a:link {
+	color: blue;
+	text-decoration: none;
+}
+
+a:visited {
+	color: blue;
+	text-decoration: none;
+}
+
+a:hover,a:active {
+	color: red;
+	text-decoration: underline;
 }
 
 .words {
@@ -24,7 +31,7 @@
 	padding: 0;
 }
 
-.selected {
+.selected{
 	background-color: #fff5bf;
 }
 </style>
@@ -58,33 +65,30 @@
 <hr />
 <div style="position: relative; float: left;">Words:
 <table>
-	<c:forEach items="${manager.pairsManager.allPairs}" var="pair">	
-			<c:choose>
-				<c:when test="${manager.currentStateManager.currentPair.word == pair.word}">
-					<tr class="words  selected">
-					 <td>
-						<c:out value="${pair.word}" escapeXml="false" />
-					</td>			
-				</c:when>
-				<c:otherwise>
-					<tr class="words">
-						<td>
-							<a href="home.do?selectWord=${pair.word}"><c:out value="${pair.word}" escapeXml="false" /></a>
-						</td>
-				</c:otherwise>
-			</c:choose>
-		
-			<td><c:out value="${pair.transcription}" escapeXml="false" /></td>
-			<td><c:out value="${pair.translation}" escapeXml="false" /></td>	
-					
-			<c:choose>
-				<c:when test="${manager.currentStateManager.currentPair.word == pair.word}">
-					 <td>
-							[<a href="home.do?editWord=${pair.word}">edit</a>]
-							[<a href="home.do?removeWord=${pair.word}">rem</a>]	
-					</td>			
-				</c:when>
-			</c:choose>	
+	<c:forEach items="${manager.pairsManager.allPairs}" var="pair">
+		<c:choose>
+			<c:when
+				test="${manager.currentStateManager.currentPair.word == pair.word}">
+				<tr class="words selected">
+					<td><c:out value="${pair.word}" escapeXml="false" /></td>
+			</c:when>
+			<c:otherwise>
+				<tr class="words">
+					<td><a href="home.do?selectWord=${pair.word}"><c:out
+						value="${pair.word}" escapeXml="false" /></a></td>
+			</c:otherwise>
+		</c:choose>
+
+		<td><c:out value="${pair.transcription}" escapeXml="false" /></td>
+		<td><c:out value="${pair.translation}" escapeXml="false" /></td>
+
+		<c:choose>
+			<c:when
+				test="${manager.currentStateManager.currentPair.word == pair.word}">
+				<td>[<a href="home.do?editWord=${pair.word}">edit</a>] [<a
+					href="home.do?removeWord=${pair.word}">rem</a>]</td>
+			</c:when>
+		</c:choose>
 		</tr>
 	</c:forEach>
 </table>

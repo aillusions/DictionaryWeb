@@ -25,12 +25,56 @@
 	</bean>
 
 	<bean id="manager" class="com.aillusions.dictionary.core.Manager">
+		<property name="workspaceManager" ref="workspaceManager" />
+		<property name="audioManager" ref="audioManager" />
+		<property name="pairsManager" ref="pairsManager" />
+		<property name="currentStateManager" ref="currentStateManager" />
+		<property name="trashManager" ref="trashManager" />
+	</bean>
+	
+	<bean id="xmlFileManager" class="com.aillusions.dictionary.core.XmlFileManager">
 		<constructor-arg>
 			<value>e://etc//dict_ital//words.xml</value>
 		</constructor-arg>
 	</bean>
+	
+	<bean id="workspaceManager" class="com.aillusions.dictionary.core.WorkspaceManager">
+		<property name="manager" ref="manager" />
+		<property name="xmlFileManager" ref="xmlFileManager" />
+	</bean>
+	
+	<bean id="audioManager" class="com.aillusions.dictionary.core.AudioManager">
+		<constructor-arg ref="manager"/>
+	</bean>
+	
+	<bean id="pairsManager" class="com.aillusions.dictionary.core.PairsManager">
+		<constructor-arg ref="manager"/>
+	</bean>
+	<bean id="currentStateManager" class="com.aillusions.dictionary.core.CurrentStateManager">
+		<constructor-arg ref="manager"/>
+	</bean>
+	
+	<bean id="trashManager" class="com.aillusions.dictionary.core.TrashManager">
+		<constructor-arg ref="manager"/>
+	</bean>
+	
+			<!-- 		
+			Manager manager = new Manager();
 
-	<bean name="/home.do" class="com.aillusions.dictionary.web.DictionaryController">
+				XmlFileManager xmlFileManager = new XmlFileManager("words.xml");
+
+				WorkspaceManager workspaceManager = new WorkspaceManager();
+				workspaceManager.setManager(manager);
+				workspaceManager.setXmlFileManager(xmlFileManager);
+
+				manager.setWorkspaceManager(workspaceManager);
+				manager.setAudioMan(new AudioManager(manager));
+				manager.setPairsManager(new PairsManager(manager));
+				manager.setCurrentStateManager(new CurrentStateManager(manager));
+				manager.setTrashManager(new TrashManager(manager));-->
+				
+
+	<bean scope="session" name="/home.do" class="com.aillusions.dictionary.web.DictionaryController">
 		<property name="manager" ref="manager" />
 		<property name="messageSource" ref="messageResource" />
 	</bean>

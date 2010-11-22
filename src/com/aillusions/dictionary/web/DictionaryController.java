@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -18,11 +21,17 @@ import org.springframework.web.servlet.mvc.Controller;
 import com.aillusions.dictionary.core.Manager;
 import com.aillusions.dictionary.core.WorkspaceManager.DictionaryHasToBeCreated;
 
-public class DictionaryController implements Controller {
+public class DictionaryController implements Controller, ApplicationContextAware {
+
+	public static final String VIEW_HOME = "home";
+	public static final String VIEW_CONFIRM = "are_you_sure";
+	public static final String VIEW_CREATE_DICT = "create_dict";
+
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	private Manager manager;
 	private MessageSource messageSource;
+	private ApplicationContext applicationContext;
 
 	public DictionaryController() {
 		logger.info("Constructor");
@@ -31,12 +40,13 @@ public class DictionaryController implements Controller {
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		this.logger.info("handle Request");
+		// paramApplicationContext.getBeanDefinitionCount();
 
 		if (!manager.getWorkspaceManager().isLoaded()) {
 			try {
 				manager.getWorkspaceManager().load();
 			} catch (DictionaryHasToBeCreated e) {
-				return new ModelAndView("create_dict");
+				return new ModelAndView(VIEW_CREATE_DICT);
 			}
 		}
 
@@ -60,7 +70,7 @@ public class DictionaryController implements Controller {
 				try {
 					manager.getWorkspaceManager().load();
 				} catch (DictionaryHasToBeCreated e) {
-					return new ModelAndView("create_dict");
+					return new ModelAndView(VIEW_CREATE_DICT);
 				}
 				manager.getWorkspaceManager().selectDictionary(currDictName);
 			}
@@ -82,14 +92,13 @@ public class DictionaryController implements Controller {
 
 				model.put("confirmationTitle", messageSource.getMessage("confirmation.remove-word", new Object[] { removeWord }, Locale
 						.getDefault()));
-				return new ModelAndView("are_you_sure", model);
+				return new ModelAndView(VIEW_CONFIRM, model);
 			}
 
 		}
 
 		response.setContentType("text/html; charset=utf-8");
-		return new ModelAndView("home", "manager", this.manager);
-
+		return new ModelAndView(VIEW_HOME, "manager", this.manager);
 	}
 
 	public Manager getManager() {
@@ -106,6 +115,10 @@ public class DictionaryController implements Controller {
 
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	public void setApplicationContext(ApplicationContext paramApplicationContext) throws BeansException {
+		this.applicationContext = paramApplicationContext;
 	}
 
 }
