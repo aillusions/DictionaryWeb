@@ -9,27 +9,41 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.aillusions.dictionary.service.PriceIncrease;
+import com.aillusions.dictionary.core.Manager;
+import com.aillusions.dictionary.model.Pair;
 
-public class PriceIncreaseFormController extends SimpleFormController {
+public class DictionaryAmendController extends SimpleFormController {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	private Manager manager;
+
 	@Override
 	public ModelAndView onSubmit(final Object command) throws ServletException {
-		int increase = ((PriceIncrease) command).getPercentage();
-		this.logger.info("Increasing prices by " + increase + "%.");
+
+		AddNewWord addNewWord = (AddNewWord) command;
+		Pair pair = new Pair();
+		pair.setEnglish(addNewWord.getWord());
+		pair.setTranscription(addNewWord.getTranscrition());
+		pair.setRussian(addNewWord.getTranslate());
+		manager.getPairsManager().addNew(pair);
 
 		this.logger.info("returning from PriceIncreaseForm view to " + getSuccessView());
-
 		return new ModelAndView(new RedirectView(getSuccessView()));
 	}
 
 	@Override
 	protected Object formBackingObject(final HttpServletRequest request) throws ServletException {
-		PriceIncrease priceIncrease = new PriceIncrease();
-		priceIncrease.setPercentage(20);
-		return priceIncrease;
+		AddNewWord addNewWord = new AddNewWord();
+		return addNewWord;
+	}
+
+	public Manager getManager() {
+		return manager;
+	}
+
+	public void setManager(Manager manager) {
+		this.manager = manager;
 	}
 
 }

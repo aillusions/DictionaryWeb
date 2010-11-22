@@ -1,6 +1,9 @@
 package com.aillusions.dictionary.web;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -17,6 +21,7 @@ public class DictionaryController implements Controller {
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	private Manager manager;
+	private MessageSource messageSource;
 
 	public DictionaryController() {
 		logger.info("Constructor");
@@ -42,8 +47,32 @@ public class DictionaryController implements Controller {
 			}
 		}
 
+		String removeWord = request.getParameter("removeWord");
+
+		if (removeWord != null && removeWord.length() > 0) {
+			String actionConfirmation = request.getParameter("actionConfirmation");
+			if (actionConfirmation != null) {
+				if (actionConfirmation.equals("Yes")) {
+					this.logger.info("remove Word");
+					manager.getCurrentStateManager().setCurrentPairByKey(removeWord);
+					manager.getCurrentStateManager().removeCurrentPair();
+				}
+			} else {
+				Map<String, String> model = new HashMap<String, String>();
+				model.put("actionToBeConfirmed", "removeWord");
+				model.put("valueToBeConfirmed", removeWord);
+
+				model.put("confirmationTitle", messageSource.getMessage("confirmation.remove-word", new Object[] { removeWord }, Locale
+						.getDefault()));
+				return new ModelAndView("are_you_sure", model);
+			}
+
+		}
+
 		response.setContentType("text/html; charset=utf-8");
+
 		return new ModelAndView("home", "manager", this.manager);
+
 	}
 
 	public Manager getManager() {
@@ -52,6 +81,14 @@ public class DictionaryController implements Controller {
 
 	public void setManager(final Manager pManager) {
 		this.manager = pManager;
+	}
+
+	public MessageSource getMessageSource() {
+		return messageSource;
+	}
+
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 
 }
